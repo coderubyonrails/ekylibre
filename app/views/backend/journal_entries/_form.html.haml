@@ -16,8 +16,8 @@
 
       = f.custom_fields
 
-      .items
-        %table#items-table
+      .items.active-list
+        %table.list#items-table
           - precision = Nomen::Currency[f.object.journal.currency].precision
           - financial_year = f.object.expected_financial_year
           - budget_size = budget_columns_count
@@ -31,8 +31,8 @@
                 %th= JournalEntryItem.human_attribute_name(:activity_budget)
               - if team_size > 0
                 %th= JournalEntryItem.human_attribute_name(:team)
-              %th{ colspan: 2 }= JournalEntryItem.human_attribute_name(:debit)
-              %th{ colspan: 2 }= JournalEntryItem.human_attribute_name(:credit)
+              %th.dec{ colspan: 2 }= JournalEntryItem.human_attribute_name(:debit)
+              %th.dec{ colspan: 2 }= JournalEntryItem.human_attribute_name(:credit)
               %th.act
 
           %tfoot

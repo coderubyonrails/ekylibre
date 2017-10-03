@@ -30,13 +30,13 @@
         %tr
           %th{rowspan: 2}= JournalEntryItem.human_attribute_name(:account_number)
           %th{rowspan: 2}= JournalEntryItem.human_attribute_name(:account_name)
-          %th{colspan: 2}= :total.tl
-          %th{colspan: 2}= :balance.tl
+          %th.bln{colspan: 2}= :total.tl
+          %th.bln{colspan: 2}= :balance.tl
         %tr
-          %th= JournalEntry.human_attribute_name(:debit)
-          %th= JournalEntry.human_attribute_name(:credit)
-          %th= JournalEntry.human_attribute_name(:debit)
-          %th= JournalEntry.human_attribute_name(:credit)
+          %th.dec= JournalEntry.human_attribute_name(:debit)
+          %th.dec= JournalEntry.human_attribute_name(:credit)
+          %th.dec= JournalEntry.human_attribute_name(:debit)
+          %th.dec= JournalEntry.human_attribute_name(:credit)
       - for item in @balance
         - d = item[0].size-1
         - if item[1].to_i > 0

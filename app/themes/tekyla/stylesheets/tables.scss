@@ -198,6 +198,11 @@ table {
         padding: round($fs-normal*0.2) round($fs-normal*0.4);
         @include ellipsis;
         @include text-align(left);
+        &.dec, &.flt, &.int { @include text-align(right) }
+        &.chk, &.act, &.dld, &.bln, &.dat, &.web  { @include text-align(center); }
+        &.color { @include text-align(center) }
+        &.status { @include text-align(center); }
+        &.list-selector { @include text-align(center); }
         &[data-list-column-sort] {
           &:hover{
             cursor: pointer;

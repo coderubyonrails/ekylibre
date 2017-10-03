@@ -27,19 +27,19 @@
   = f.custom_fields
 
 = field_set Sale.human_attribute_name(:items) do
-  .items
-    %table#items-table
+  .items.active-list
+    %table.list#items-table
       %thead
         %tr
           %th= SaleItem.human_attribute_name(:variant)
-          %th= Parcel.human_attribute_name(:number) if f.object.parcels.any?
-          %th= SaleItem.human_attribute_name(:quantity)
-          %th= SaleItem.human_attribute_name(:unit_pretax_amount)
+          %th.int= Parcel.human_attribute_name(:number) if f.object.parcels.any?
+          %th.dec= SaleItem.human_attribute_name(:quantity)
+          %th.dec= SaleItem.human_attribute_name(:unit_pretax_amount)
           %th= SaleItem.human_attribute_name(:tax)
-          %th= SaleItem.human_attribute_name(:reduction_percentage)
-          %th= SaleItem.human_attribute_name(:pretax_amount)
-          %th= SaleItem.human_attribute_name(:amount)
-          %th= SaleItem.human_attribute_name(:currency)
+          %th.dec= SaleItem.human_attribute_name(:reduction_percentage)
+          %th.dec= SaleItem.human_attribute_name(:pretax_amount)
+          %th.dec= SaleItem.human_attribute_name(:amount)
+          %th.dec= SaleItem.human_attribute_name(:currency)
           %th
       - precision = Nomen::Currency[f.object.currency].precision
       %tfoot

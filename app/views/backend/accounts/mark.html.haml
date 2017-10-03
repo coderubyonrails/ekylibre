@@ -31,11 +31,11 @@
           %tr
             %th{ colspan: (partial_lettering ? 2 : 1) }= JournalEntryItem.human_attribute_name(:letter)
             %th.act
-            %th= JournalEntry.human_attribute_name(:printed_on)
+            %th.dat= JournalEntry.human_attribute_name(:printed_on)
             %th= JournalEntry.model_name.human
             %th= JournalEntryItem.human_attribute_name(:name)
-            %th= JournalEntryItem.human_attribute_name(:absolute_debit)
-            %th= JournalEntryItem.human_attribute_name(:absolute_credit)
+            %th.dec= JournalEntryItem.human_attribute_name(:absolute_debit)
+            %th.dec= JournalEntryItem.human_attribute_name(:absolute_credit)
 
         %tfoot
           %tr#total.valid.total{data: {valid_if_equality_between: "#total-debit, #total-credit", submit_if_valid: "true"}}

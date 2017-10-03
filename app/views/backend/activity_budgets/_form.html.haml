@@ -16,15 +16,15 @@
   end
 
 = field_set(ActivityBudget.human_attribute_name(:items)) do
-  .items
-    %table.table
+  .items.active-list
+    %table.table.list
       %thead
         %tr
           %th= ActivityBudgetItem.human_attribute_name(:variant)
-          %th= ActivityBudgetItem.human_attribute_name(:quantity)
+          %th.dec= ActivityBudgetItem.human_attribute_name(:quantity)
           %th= ActivityBudgetItem.human_attribute_name(:computation_method)
-          %th= ActivityBudgetItem.human_attribute_name(:unit_price)
-          %th= ActivityBudgetItem.human_attribute_name(:amount)
+          %th.dec= ActivityBudgetItem.human_attribute_name(:unit_price)
+          %th.dec= ActivityBudgetItem.human_attribute_name(:amount)
           %th.with-some-supports
             %span= ActivityBudgetItem.human_attribute_name(:amount)
             %span= "/"

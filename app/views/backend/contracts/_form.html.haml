@@ -8,14 +8,14 @@
   = f.custom_fields
 
 = field_set Contract.human_attribute_name(:items) do
-  .items
-    %table#items-table
+  .items.active-list
+    %table.list#items-table
       %thead
         %tr
           %th= ContractItem.human_attribute_name(:variant)
-          %th= ContractItem.human_attribute_name(:quantity)
-          %th= ContractItem.human_attribute_name(:unit_pretax_amount)
-          %th= ContractItem.human_attribute_name(:pretax_amount)
+          %th.dec= ContractItem.human_attribute_name(:quantity)
+          %th.dec= ContractItem.human_attribute_name(:unit_pretax_amount)
+          %th.dec= ContractItem.human_attribute_name(:pretax_amount)
           %th= ContractItem.human_attribute_name(:currency)
           %th
       - precision = Nomen::Currency[f.object.currency].precision

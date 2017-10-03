@@ -15,7 +15,7 @@
               %th= deal_class.human_attribute_name(:third)
             %th= deal_class.human_attribute_name(:reference)
             %th= deal_class.human_attribute_name(:reference_number)
-            %th= deal_class.human_attribute_name(:amount)
+            %th.dec= deal_class.human_attribute_name(:amount)
         %tbody
           - affair.deals.sort_by{ |a| a.dealt_at || a.created_at }.each do |deal|
             %tr

@@ -16,18 +16,18 @@
   = f.custom_fields
 
 = field_set Purchase.human_attribute_name(:items) do
-  .items
-    %table#items-table
+  .items.active-list
+    %table.list#items-table
       %thead
         %tr
           %th= PurchaseItem.human_attribute_name(:variant)
           %th= Parcel.human_attribute_name(:number) if f.object.parcels.any?
-          %th= PurchaseItem.human_attribute_name(:quantity)
-          %th= PurchaseItem.human_attribute_name(:unit_pretax_amount)
+          %th.dec= PurchaseItem.human_attribute_name(:quantity)
+          %th.dec= PurchaseItem.human_attribute_name(:unit_pretax_amount)
           %th= PurchaseItem.human_attribute_name(:tax)
-          %th= PurchaseItem.human_attribute_name(:reduction_percentage)
-          %th= PurchaseItem.human_attribute_name(:pretax_amount)
-          %th= PurchaseItem.human_attribute_name(:amount)
+          %th.dec= PurchaseItem.human_attribute_name(:reduction_percentage)
+          %th.dec= PurchaseItem.human_attribute_name(:pretax_amount)
+          %th.dec= PurchaseItem.human_attribute_name(:amount)
           %th= PurchaseItem.human_attribute_name(:currency)
           %th
       - precision = Nomen::Currency[f.object.currency].precision
