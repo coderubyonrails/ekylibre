@@ -265,13 +265,27 @@ $help-width: round($default-ratio * $side-width);
 #help .inner {
   @include border-left(1px solid #AAA);
 }
-
+.turbolinkoverlay {
+  position: fixed;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  top: 96px;
+  opacity: 0.2;
+  display: none;
+}
 
 html.backend {
+
   &.turbolinks-progress-bar::before {
-    height: 3px !important;
-    background-color: white !important;
+    height: 10px !important;
+    background-color: $active-color !important;
+    z-index: 100;
+    top: 50%;
+    margin-left: 13.2%;
   }
+
   background: $desktop-background;
   height: 100%;
   body {
