@@ -1,5 +1,5 @@
 - nature = f.object.nature
-- main_title("new_#{nature}".tl) if f.object.new_record?
+- main_title(bread_crumb_previous_url+" > "+"new_#{nature}".tl) if f.object.new_record?
 = field_set do
   = f.input :nature, as: :hidden
   - if f.object.contact?
