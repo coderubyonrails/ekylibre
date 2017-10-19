@@ -48,6 +48,29 @@ module Customizable
     end
   end
 
+  def string_currency_locale_covert(currency)
+    if !currency.blank? && !currency.is_a?(Numeric)
+      currency.gsub!(/[^\d.,]/,'')
+
+      if currency =~ /^.*[\.,]\d{1}$/
+        currency = currency + "0"
+      end
+
+      unless currency =~ /^.*[\.,]\d{2}$/
+        currency = currency + "00"
+      end
+
+      currency.gsub!(/[\.,]/,'')
+      currency.to_f / 100
+    else
+      currency
+    end
+  end
+
+  def format_currency_locale_covert(amount, currency)
+    amount.localize(format: '%n', precision: 2).lstrip.rstrip unless amount.blank?
+  end
+
   module ClassMethods
     # Returns the definition of custom fields of the class
     def custom_fields

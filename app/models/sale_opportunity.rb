@@ -54,6 +54,7 @@
 #
 
 class SaleOpportunity < SaleAffair
+  include Customizable
   include Commentable
   include Versionable
   attr_readonly :currency
@@ -64,7 +65,7 @@ class SaleOpportunity < SaleAffair
   # ]VALIDATORS]
   validates :client, :responsible, presence: true
   validates :probability_percentage, numericality: { in: 0..100 }
-
+  validates :Probability_percentage, :Pretax_amount, presence: true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
   state_machine :state, initial: :prospecting do
     state :prospecting
     state :qualification
@@ -125,6 +126,21 @@ class SaleOpportunity < SaleAffair
     self.currency ||= Preference[:currency]
   end
 
+  def Probability_percentage
+    format_currency_locale_covert(probability_percentage,self.currency)
+  end
+
+  def Probability_percentage=(probability_percentage)
+    self.probability_percentage = string_currency_locale_covert(probability_percentage)
+  end
+
+  def Pretax_amount
+    format_currency_locale_covert(pretax_amount,self.currency)
+  end
+
+  def Pretax_amount=(pretax_amount)
+    self.pretax_amount = string_currency_locale_covert(pretax_amount)
+  end
   def status
     if lost?
       :stop

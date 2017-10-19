@@ -51,6 +51,7 @@
 #  variant_id                    :integer
 #
 class ParcelItem < Ekylibre::Record::Base
+  include Customizable
   attr_readonly :parcel_id
   attr_accessor :product_nature_variant_id
   belongs_to :analysis
@@ -87,6 +88,7 @@ class ParcelItem < Ekylibre::Record::Base
                                          message: 'activerecord.errors.messages.unitary_in_parcel'.t }
   validates :product_name, presence: { if: -> { product_is_identifiable? && parcel_incoming? } }
   validates :product_identification_number, presence: { if: -> { product_is_identifiable? && parcel_incoming? } }
+  validates :Population, :Unit_pretax_amount, presence:true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
 
   scope :with_nature, ->(nature) { joins(:parcel).merge(Parcel.with_nature(nature)) }
 
@@ -159,9 +161,25 @@ class ParcelItem < Ekylibre::Record::Base
     !parcel_allow_items_update?
   end
 
+  def Population
+    format_currency_locale_covert(population,self.currency)
+  end
+
+  def Population=(population)
+    self.population = string_currency_locale_covert(population)
+  end
+
+  def Unit_pretax_amount
+    format_currency_locale_covert(unit_pretax_amount,self.currency)
+  end
+
+  def Unit_pretax_amount=(unit_pretax_amount)
+    self.unit_pretax_amount = string_currency_locale_covert(unit_pretax_amount)
+  end
+
   def prepared?
     (!parcel_incoming? && source_product.present?) ||
-      (parcel_incoming? && variant.present?)
+        (parcel_incoming? && variant.present?)
   end
 
   def trade_item

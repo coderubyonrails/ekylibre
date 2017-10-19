@@ -51,10 +51,11 @@
 #
 
 class SaleItem < Ekylibre::Record::Base
+  include Customizable
   include PeriodicCalculable
   attr_readonly :sale_id
   enumerize :compute_from, in: %i[unit_pretax_amount pretax_amount amount],
-                           default: :unit_pretax_amount, predicates: { prefix: true }
+            default: :unit_pretax_amount, predicates: { prefix: true }
   refers_to :currency
   belongs_to :account
   belongs_to :activity_budget
@@ -96,21 +97,22 @@ class SaleItem < Ekylibre::Record::Base
   # ]VALIDATORS]
   validates :currency, length: { allow_nil: true, maximum: 3 }
   validates :tax, presence: true
+  validates :Quantity, :Reduction_percentage, :Pretax_amount, :Amount,:Unit_pretax_amount, presence:true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
 
   # return all sale items  between two dates
   scope :between, lambda { |started_at, stopped_at|
-    joins(:sale).merge(Sale.invoiced_between(started_at, stopped_at))
-  }
+                  joins(:sale).merge(Sale.invoiced_between(started_at, stopped_at))
+                }
 
   # return all estimates sale items between two accounted_at dates
   scope :estimate_between, lambda { |started_at, stopped_at|
-    joins(:sale).merge(Sale.estimate_between(started_at, stopped_at))
-  }
+                           joins(:sale).merge(Sale.estimate_between(started_at, stopped_at))
+                         }
 
   # return all sale items for the consider product_nature
   scope :of_product_nature, lambda { |product_nature|
-    joins(:variant).merge(ProductNatureVariant.of_natures(product_nature))
-  }
+                            joins(:variant).merge(ProductNatureVariant.of_natures(product_nature))
+                          }
 
   calculable period: :month, column: :pretax_amount, at: 'sales.invoiced_at', name: :sum, joins: :sale
 
@@ -184,6 +186,47 @@ class SaleItem < Ekylibre::Record::Base
       end
     end
   end
+
+  def Quantity
+    format_currency_locale_covert(quantity,self.currency)
+  end
+
+  def Quantity=(quantity)
+    self.quantity = string_currency_locale_covert(quantity)
+  end
+
+  def Reduction_percentage
+    format_currency_locale_covert(reduction_percentage,self.currency)
+  end
+
+  def Reduction_percentage=(reduction_percentage)
+    self.reduction_percentage = string_currency_locale_covert(reduction_percentage)
+  end
+
+  def Pretax_amount
+    format_currency_locale_covert(pretax_amount,self.currency)
+  end
+
+  def Pretax_amount=(pretax_amount)
+    self.pretax_amount = string_currency_locale_covert(pretax_amount)
+  end
+
+  def Amount
+    format_currency_locale_covert(amount,self.currency)
+  end
+
+  def Amount=(amount)
+    self.amount = string_currency_locale_covert(amount)
+  end
+
+  def Unit_pretax_amount
+    format_currency_locale_covert(unit_pretax_amount,self.currency)
+  end
+
+  def Unit_pretax_amount=(unit_pretax_amount)
+    self.unit_pretax_amount = string_currency_locale_covert(unit_pretax_amount)
+  end
+
 
   protect(on: :update) do
     !sale.draft?

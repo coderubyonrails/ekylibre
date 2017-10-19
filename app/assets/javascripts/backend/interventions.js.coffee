@@ -20,7 +20,7 @@
         if properties.display
           statusDisplay = parameterContainer.find(".display-info")
           statusDisplay.find(" .status")
-                       .attr('data-display-status', properties.display)
+          .attr('data-display-status', properties.display)
           statusDisplay.show()
 
     handleComponents: (form, attributes, prefix = '') ->
@@ -53,12 +53,12 @@
             E.interventions.handleDynascope(form, attrs, subprefix + '_' + id + '_')
         else
           if name is 'attributes' and value?
-            # for each attribute
+# for each attribute
             for k, v of value
               input = form.find("##{prefix}#{k}")
               unrollPath = input.attr('data-selector')
               if unrollPath
-                # for each scope
+# for each scope
                 for scopeKey, scopeValue of v.dynascope
 
                   scopeReg = ///
@@ -91,8 +91,8 @@
       for name, value of attributes
         subprefix = prefix + name
         if subprefix is updater_id
-          # Nothing to update
-          # console.warn "Nothing to do with #{subprefix}"
+# Nothing to update
+# console.warn "Nothing to do with #{subprefix}"
         else if /\w+_attributes$/.test(name)
           E.interventions.unserializeList(form, value, subprefix + '_', updater_id)
         else
@@ -126,7 +126,7 @@
               update = true
               update = false if value is null and element.val() is ""
               if valueType == "number"
-                # When element doesn't have any value, element.numericalValue() == 0
+# When element doesn't have any value, element.numericalValue() == 0
                 update = false if value == element.numericalValue() && element.numericalValue() != 0
               else
                 update = false if value == element.val()
@@ -146,7 +146,7 @@
         scopeUri = scopeUri.replace(re, "$1" + newTime + "$3")
         $(item).attr("data-selector", encodeURI(scopeUri))
 
-    # Ask for a refresh of values depending on given update
+# Ask for a refresh of values depending on given update
     refresh: (updater, options = {}) ->
       unless updater?
         console.error 'Missing updater'
@@ -316,7 +316,7 @@
 
   $(document).ready ->
 
-    # E.interventions.hideKujakuFilters($('.view-toolbar a[data-janus-href="cobbles"]').hasClass('active'))
+# E.interventions.hideKujakuFilters($('.view-toolbar a[data-janus-href="cobbles"]').hasClass('active'))
 
     if $('.new_intervention, .edit_intervention').length > 0
       E.interventions.showInterventionParticipationsModal()
@@ -353,16 +353,16 @@
 
       @taskboard.addSelectTaskEvent((event) ->
 
-          selectedField = $(event.target)
-          columnIndex = instance.getTaskboard().getColumnIndex(selectedField)
-          header = instance.getTaskboard().getHeaderByIndex(columnIndex)
-          checkedFieldsCount = instance.getTaskboard().getCheckedSelectFieldsCount(selectedField)
+        selectedField = $(event.target)
+        columnIndex = instance.getTaskboard().getColumnIndex(selectedField)
+        header = instance.getTaskboard().getHeaderByIndex(columnIndex)
+        checkedFieldsCount = instance.getTaskboard().getCheckedSelectFieldsCount(selectedField)
 
-          if (checkedFieldsCount == 0)
+        if (checkedFieldsCount == 0)
 
-            instance.getTaskboard().hiddenHeaderIcons(header)
-          else
-            instance.getTaskboard().displayHeaderIcons(header)
+          instance.getTaskboard().hiddenHeaderIcons(header)
+        else
+          instance.getTaskboard().displayHeaderIcons(header)
       )
 
     addEditIconClickEvent: ->

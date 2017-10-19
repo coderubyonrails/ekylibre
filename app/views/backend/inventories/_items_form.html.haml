@@ -8,7 +8,7 @@
         %span= link_to(:details.tl, controller: "/backend/products", action: :show, id: nested.object.product_id)
       - else
         %span.input-append
-          = nested.input_field :actual_population
+          = nested.input_field :Actual_population
           %span.add-on= nested.object.unit_name
           %span.add-on= nested.object.unit_pretax_stock_amount
-        %span.help-block= :expected_quantity_is_x.tl x: nested.object.expected_population.l(precision: 0)
+        %span.help-block= :Expected_quantity_is_x.tl x: nested.object.expected_population.l(precision: 0)

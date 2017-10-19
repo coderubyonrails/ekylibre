@@ -36,6 +36,7 @@
 #
 
 class ContractItem < Ekylibre::Record::Base
+  include Customizable
   belongs_to :contract, inverse_of: :items
   belongs_to :variant, class_name: 'ProductNatureVariant', inverse_of: :contract_items
   has_one :product_nature_category, through: :variant, source: :category
@@ -43,6 +44,7 @@ class ContractItem < Ekylibre::Record::Base
   # [VALIDATORS[ Do not edit these lines directly. Use `rake clean:validations`.
   validates :pretax_amount, :quantity, :unit_pretax_amount, presence: true, numericality: { greater_than: -1_000_000_000_000_000, less_than: 1_000_000_000_000_000 }
   validates :contract, :variant, presence: true
+  validates :Pretax_amount, :Quantity, :Unit_pretax_amount, presence:true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
   # ]VALIDATORS]
 
   delegate :currency, to: :contract
@@ -50,13 +52,13 @@ class ContractItem < Ekylibre::Record::Base
 
   # return all contract items  between two dates
   scope :between, lambda { |started_on, stopped_on|
-    where(contract_id: Purchase.invoiced_between(started_on, stopped_on).select(:contract_id))
-  }
+                  where(contract_id: Purchase.invoiced_between(started_on, stopped_on).select(:contract_id))
+                }
 
   # return all contract items for the consider product_nature_category
   scope :of_product_nature_category, lambda { |product_nature_category|
-    where(variant_id: ProductNatureVariant.of_categories(product_nature_category))
-  }
+                                     where(variant_id: ProductNatureVariant.of_categories(product_nature_category))
+                                   }
 
   before_validation do
     self.quantity ||= 0
@@ -65,4 +67,30 @@ class ContractItem < Ekylibre::Record::Base
   validate do
     errors.add(:quantity, :invalid) if self.quantity.zero?
   end
+
+
+  def Quantity
+    format_currency_locale_covert(quantity,self.currency)
+  end
+
+  def Quantity=(quantity)
+    self.quantity = string_currency_locale_covert(quantity)
+  end
+
+  def Pretax_amount
+    format_currency_locale_covert(pretax_amount,self.currency)
+  end
+
+  def Pretax_amount=(pretax_amount)
+    self.pretax_amount = string_currency_locale_covert(pretax_amount)
+  end
+
+  def Unit_pretax_amount
+    format_currency_locale_covert(unit_pretax_amount,self.currency)
+  end
+
+  def Unit_pretax_amount=(unit_pretax_amount)
+    self.unit_pretax_amount = string_currency_locale_covert(unit_pretax_amount)
+  end
+
 end

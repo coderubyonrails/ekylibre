@@ -87,6 +87,22 @@ class CashTransfer < Ekylibre::Record::Base
     errors.add(:reception_cash_id, :invalid) if reception_cash_id == emission_cash_id
   end
 
+  def Emission_amount
+     format_currency_locale_covert(emission_amount,self.emission_currency)
+  end
+
+  def Emission_amount=(emission_amount)
+     self.emission_amount = string_currency_locale_covert(emission_amount)
+  end
+
+  def Currency_rate
+    format_currency_locale_covert(currency_rate,self.emission_currency)
+  end
+
+  def Currency_rate=(currency_rate)
+    self.currency_rate = string_currency_locale_covert(currency_rate)
+  end
+
   bookkeep do |b|
     transfer_account = Account.find_in_nomenclature(:internal_transfers)
     label = tc(:bookkeep, resource: self.class.model_name.human, number: number, description: description, emission: emission_cash.name, reception: reception_cash.name)

@@ -22,7 +22,7 @@
               .gsub("[QTY]", content_tag(:span, source_product.population.or_else('&ndash;'.html_safe), class: "item-population-total"))
               .gsub("[UNT]", content_tag(:span, h(variant.unit_name.or_else('#')), class: "item-population-unit-name").html_safe)
           = f.input :population, wrapper: :nested_append, hint: hint.html_safe do
-            = f.input_field :population, class: "item-population", placeholder: source_product.population.or_else(nil).to_s
+            = f.input_field :Population, class: "item-population", placeholder: source_product.population.or_else(nil).to_s
             %span.add-on.item-population-unit-name= variant.unit_name.or_else('#')
       -# .errors= item.errors.inspect
     %td= f.referenced_association(:analysis, wrapper: :nested)

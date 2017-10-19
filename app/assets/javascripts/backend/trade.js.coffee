@@ -104,9 +104,9 @@
       # Compute pretax_amount
       updates.pretax_amount = values.unit_pretax_amount * values.quantity * (100.0 - values.reduction_percentage) / 100.0
       # Compute amount
-      updates.amount = E.trade.round(updates.pretax_amount * values.tax, 2)
+      updates.amount = I18n.toNumber(E.trade.round(updates.pretax_amount * values.tax, 2), {precision: 2})
       # Round pretax amount
-      updates.pretax_amount = E.trade.round(updates.pretax_amount, 2)
+      updates.pretax_amount = I18n.toNumber(E.trade.round(updates.pretax_amount, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     # Compute other amounts from pretax amount
@@ -114,9 +114,9 @@
       values = E.trade.itemValues(item)
       updates = {}
       # Compute unit_pretax_amount
-      updates.unit_pretax_amount = E.trade.round(values.pretax_amount / (values.quantity * (100.0 - values.reduction_percentage) / 100.0), 2)
+      updates.unit_pretax_amount = I18n.toNumber(E.trade.round(values.pretax_amount / (values.quantity * (100.0 - values.reduction_percentage) / 100.0), 2), {precision: 2})
       # Compute amount
-      updates.amount = E.trade.round(values.pretax_amount * values.tax, 2)
+      updates.amount = I18n.toNumber(E.trade.round(values.pretax_amount * values.tax, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     # Compute other amounts from amount
@@ -126,9 +126,9 @@
       # Compute pretax_amount
       updates.pretax_amount = values.amount / values.tax
       # Compute unit_pretax_amount
-      updates.unit_pretax_amount = E.trade.round(updates.pretax_amount / (values.quantity * (100.0 - values.reduction_percentage) / 100.0), 2)
+      updates.unit_pretax_amount = I18n.toNumber(E.trade.round(updates.pretax_amount / (values.quantity * (100.0 - values.reduction_percentage) / 100.0), 2), {precision: 2})
       # Round pretax amount
-      updates.pretax_amount = E.trade.round(updates.pretax_amount, 2)
+      updates.pretax_amount = I18n.toNumber(E.trade.round(updates.pretax_amount, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     # Compute other amounts from amount
@@ -138,9 +138,9 @@
       # Compute pretax_amount
       updates.pretax_amount = -1 * values.unit_pretax_amount * values.credited_quantity * (100.0 - values.reduction_percentage) / 100.0
       # Compute unit_pretax_amount
-      updates.amount = E.trade.round(updates.pretax_amount * values.tax, 2)
+      updates.amount = I18n.toNumber(E.trade.round(updates.pretax_amount * values.tax, 2), {precision: 2})
       # Round pretax amount
-      updates.pretax_amount = E.trade.round(updates.pretax_amount, 2)
+      updates.pretax_amount = I18n.toNumber(E.trade.round(updates.pretax_amount, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     # Compute other amounts from pretax amount
@@ -148,9 +148,9 @@
       values = E.trade.itemValues(item)
       updates = {}
       # Compute credited quantity
-      updates.credited_quantity = -(E.trade.round(values.pretax_amount / (values.unit_pretax_amount * (100.0 - values.reduction_percentage) / 100.0), 2))
+      updates.credited_quantity = I18n.toNumber((-(E.trade.round(values.pretax_amount / (values.unit_pretax_amount * (100.0 - values.reduction_percentage) / 100.0), 2))), {precision: 2})
       # Compute amount
-      updates.amount = E.trade.round(values.pretax_amount * values.tax, 2)
+      updates.amount = I18n.toNumber(E.trade.round(values.pretax_amount * values.tax, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     # Compute other amounts from unit pretax amount
@@ -160,9 +160,9 @@
       # Compute pretax_amount
       updates.pretax_amount = values.amount / values.tax
       # Compute credited quantity
-      updates.credited_quantity = -(E.trade.round(values.pretax_amount / (values.unit_pretax_amount * (100.0 - values.reduction_percentage) / 100.0), 2))
+      updates.credited_quantity = I18n.toNumber((-(E.trade.round(values.pretax_amount / (values.unit_pretax_amount * (100.0 - values.reduction_percentage) / 100.0), 2))), {precision: 2})
       # Round pretax amount
-      updates.pretax_amount = E.trade.round(updates.pretax_amount, 2)
+      updates.pretax_amount = I18n.toNumber(E.trade.round(updates.pretax_amount, 2), {precision: 2})
       E.trade.itemValues(item, updates)
 
     find: (item, name) ->
@@ -181,7 +181,7 @@
         return values
       else
         for key, value of updates
-          E.trade.find(item, key).numericalValue(value)
+          E.trade.find(item, key).val(value)
 
   E.purchasing =
 

@@ -59,7 +59,7 @@
   # Test change on value and trigger change event if value is really different
   C.changeNumericalValue = (element, result, force = false) ->
     if element.numericalValue() != result or force
-      element.numericalValue result
+      element.text I18n.toNumber(result, {precision: 2})
       element.trigger "change"
     return element
 

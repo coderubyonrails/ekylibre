@@ -6,7 +6,7 @@
 
 - if f.object.draft? || f.object.new_record?
   = field_set(:depreciation) do
-    = f.money :depreciable_amount
+    = f.money :Depreciable_amount
     = f.input :depreciation_method, as: :radio_buttons, show: '#{{value}}_options'
     = f.input :started_on
     = f.input :depreciation_period, as: :radio_buttons

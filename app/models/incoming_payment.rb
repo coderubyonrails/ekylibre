@@ -83,7 +83,7 @@ class IncomingPayment < Ekylibre::Record::Base
   validates :commission_amount, numericality: { greater_than_or_equal_to: 0.0 }
   validates :payer, presence: true
   validates :commission_account, presence: { if: :with_commission? }
-
+  validates :Amount ,presence: true
   acts_as_numbered
   acts_as_affairable :payer, dealt_at: :to_bank_at, class_name: 'SaleAffair'
 
@@ -92,14 +92,14 @@ class IncomingPayment < Ekylibre::Record::Base
   scope :depositables, -> { where("deposit_id IS NULL AND to_bank_at <= ? AND mode_id IN (SELECT id FROM #{IncomingPaymentMode.table_name} WHERE with_deposit = ?)", Time.zone.now, true) }
 
   scope :depositables_for, lambda { |deposit, mode = nil|
-    deposit = Deposit.find(deposit) unless deposit.is_a?(Deposit)
-    where('to_bank_at <= ?', Time.zone.now).where('deposit_id = ? OR (deposit_id IS NULL AND mode_id = ?)', deposit.id, (mode ? mode_id : deposit.mode_id))
-  }
+                           deposit = Deposit.find(deposit) unless deposit.is_a?(Deposit)
+                           where('to_bank_at <= ?', Time.zone.now).where('deposit_id = ? OR (deposit_id IS NULL AND mode_id = ?)', deposit.id, (mode ? mode_id : deposit.mode_id))
+                         }
   scope :last_updateds, -> { order(updated_at: :desc) }
 
   scope :between, lambda { |started_at, stopped_at|
-    where(paid_at: started_at..stopped_at)
-  }
+                  where(paid_at: started_at..stopped_at)
+                }
   scope :matching_cash, ->(id) { includes(:mode).where(incoming_payment_modes: { cash_id: id }) }
 
   calculable period: :month, column: :amount, at: :paid_at, name: :sum
@@ -131,8 +131,8 @@ class IncomingPayment < Ekylibre::Record::Base
 
   protect do
     (deposit && deposit.protected_on_update?) ||
-      (journal_entry && journal_entry.closed?) ||
-      pointed_by_bank_statement?
+        (journal_entry && journal_entry.closed?) ||
+        pointed_by_bank_statement?
   end
 
   # protect(on: :update) do |p|
@@ -159,6 +159,13 @@ class IncomingPayment < Ekylibre::Record::Base
         entry.add_credit(label, payer.account(:client).id, amount, as: :payer, resource: payer) unless amount.zero?
       end
     end
+  end
+  def Amount
+    ::I18n.localize(amount.to_s.to_f)
+  end
+
+  def Amount=(amount)
+    self.amount = amount.gsub(',', '.') unless amount.blank?
   end
 
   delegate :third_attribute, to: :class

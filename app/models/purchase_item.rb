@@ -52,6 +52,7 @@
 
 class PurchaseItem < Ekylibre::Record::Base
   include PeriodicCalculable
+  include Customizable
   refers_to :currency
   belongs_to :account
   belongs_to :activity_budget
@@ -80,6 +81,7 @@ class PurchaseItem < Ekylibre::Record::Base
   delegate :currency, to: :purchase, prefix: true
   delegate :name, to: :variant, prefix: true
   delegate :name, :amount, :short_label, to: :tax, prefix: true
+  validates :Amount, :Pretax_amount, :Quantity, :Reduction_percentage, :Unit_amount, :Unit_pretax_amount, presence:true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
   # delegate :subscribing?, :deliverable?, to: :product_nature, prefix: true
 
   # accepts_nested_attributes_for :fixed_asset
@@ -93,17 +95,17 @@ class PurchaseItem < Ekylibre::Record::Base
 
   # return all purchase items  between two dates
   scope :between, lambda { |started_at, stopped_at|
-    joins(:purchase).merge(Purchase.invoiced_between(started_at, stopped_at))
-  }
+                  joins(:purchase).merge(Purchase.invoiced_between(started_at, stopped_at))
+                }
   # return all sale items for the consider product_nature
   scope :of_product_nature, lambda { |product_nature|
-    joins(:variant).merge(ProductNatureVariant.of_natures(product_nature))
-  }
+                            joins(:variant).merge(ProductNatureVariant.of_natures(product_nature))
+                          }
 
   # return all sale items for the consider product_nature
   scope :of_product_nature_category, lambda { |product_nature_category|
-    joins(:variant).merge(ProductNatureVariant.of_categories(product_nature_category))
-  }
+                                     joins(:variant).merge(ProductNatureVariant.of_categories(product_nature_category))
+                                   }
 
   before_validation do
     self.currency = purchase_currency if purchase
@@ -172,29 +174,78 @@ class PurchaseItem < Ekylibre::Record::Base
         # set stock catalog price if blank
         catalog = Catalog.by_default!(usage)
         next if catalog.nil? || variant.catalog_items.of_usage(usage).any? ||
-                unit_pretax_amount.blank? || unit_pretax_amount.zero?
+            unit_pretax_amount.blank? || unit_pretax_amount.zero?
         variant.catalog_items.create!(
-          catalog: catalog,
-          amount: unit_pretax_amount, currency: currency
+            catalog: catalog,
+            amount: unit_pretax_amount, currency: currency
         )
       end
     end
   end
 
+
+  def Quantity
+    format_currency_locale_covert(quantity,self.currency)
+  end
+
+  def Quantity=(quantity)
+    self.quantity = string_currency_locale_covert(quantity)
+  end
+
+  def Reduction_percentage
+    format_currency_locale_covert(reduction_percentage,self.currency)
+  end
+
+  def Reduction_percentage=(reduction_percentage)
+    self.reduction_percentage = string_currency_locale_covert(reduction_percentage)
+  end
+
+  def Pretax_amount
+    format_currency_locale_covert(pretax_amount,self.currency)
+  end
+
+  def Pretax_amount=(pretax_amount)
+    self.pretax_amount = string_currency_locale_covert(pretax_amount)
+  end
+
+  def Amount
+    format_currency_locale_covert(amount,self.currency)
+  end
+
+  def Amount=(amount)
+    self.amount = string_currency_locale_covert(amount)
+  end
+
+  def Unit_amount
+    format_currency_locale_covert(unit_amount,self.currency)
+  end
+
+  def Unit_amount=(unit_amount)
+    self.unit_amount = string_currency_locale_covert(unit_amount)
+  end
+
+  def Unit_pretax_amount
+    format_currency_locale_covert(unit_pretax_amount,self.currency)
+  end
+
+  def Unit_pretax_amount=(unit_pretax_amount)
+    self.unit_pretax_amount = string_currency_locale_covert(unit_pretax_amount)
+  end
+
   def new_fixed_asset
     # Create asset
     asset_attributes = {
-      currency: currency,
-      started_on: purchase.invoiced_at.to_date,
-      depreciable_amount: pretax_amount.to_f,
-      depreciation_period: Preference.get(:default_depreciation_period).value,
-      depreciation_method: variant.fixed_asset_depreciation_method || :simplified_linear,
-      depreciation_percentage: variant.fixed_asset_depreciation_percentage || 20,
-      journal: Journal.find_by(nature: :purchases),
-      asset_account: variant.fixed_asset_account, # 2
-      allocation_account: variant.fixed_asset_allocation_account, # 28
-      expenses_account: variant.fixed_asset_expenses_account, # 68
-      product: depreciable_product
+        currency: currency,
+        started_on: purchase.invoiced_at.to_date,
+        depreciable_amount: pretax_amount.to_f,
+        depreciation_period: Preference.get(:default_depreciation_period).value,
+        depreciation_method: variant.fixed_asset_depreciation_method || :simplified_linear,
+        depreciation_percentage: variant.fixed_asset_depreciation_percentage || 20,
+        journal: Journal.find_by(nature: :purchases),
+        asset_account: variant.fixed_asset_account, # 2
+        allocation_account: variant.fixed_asset_allocation_account, # 28
+        expenses_account: variant.fixed_asset_expenses_account, # 68
+        product: depreciable_product
     }
     asset_name = parcel_items.collect(&:name).to_sentence if products.any?
     asset_name ||= name

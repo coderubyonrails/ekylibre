@@ -38,6 +38,7 @@
 #
 
 class InventoryItem < Ekylibre::Record::Base
+  include Customizable
   belongs_to :inventory, inverse_of: :items
   belongs_to :product
   belongs_to :product_movement, dependent: :destroy
@@ -50,6 +51,7 @@ class InventoryItem < Ekylibre::Record::Base
   validates :actual_population, :expected_population, :unit_pretax_stock_amount, presence: true, numericality: { greater_than: -1_000_000_000_000_000, less_than: 1_000_000_000_000_000 }
   validates :currency, length: { maximum: 500 }, allow_blank: true
   validates :inventory, :product, presence: true
+  validates :Actual_population, :Expected_population, presence:true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
   # ]VALIDATORS]
 
   scope :of_variant, ->(variant) { joins(:product).merge(Product.of_variant(variant)) }
@@ -82,6 +84,22 @@ class InventoryItem < Ekylibre::Record::Base
       ProductMovement.destroy(product_movement)
       update_columns(product_movement_id: nil)
     end
+  end
+
+  def Actual_population
+    format_currency_locale_covert(actual_population,self.currency)
+  end
+
+  def Actual_population=(actual_population)
+    self.actual_population = string_currency_locale_covert(actual_population)
+  end
+
+  def Expected_population
+    format_currency_locale_covert(expected_population,self.currency)
+  end
+
+  def Expected_population=(expected_population)
+    self.expected_population = string_currency_locale_covert(expected_population)
   end
 
   # Returns the delta population between actual and expectedp populations

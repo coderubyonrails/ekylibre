@@ -91,6 +91,7 @@ class Loan < Ekylibre::Record::Base
   validates :loan_account, :interest_account, presence: true
   validates :insurance_account, presence: { if: -> { updateable? && insurance_percentage.present? && insurance_percentage.nonzero? } }
   validates :amount, numericality: { greater_than: 0 }
+  validates :Amount, :Interest_percentage, :Insurance_percentage, presence: true, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
 
   state_machine :state, initial: :draft do
     state :draft
@@ -165,6 +166,30 @@ class Loan < Ekylibre::Record::Base
     true
   end
 
+  def Insurance_percentage
+    format_currency_locale_covert(insurance_percentage,self.currency)
+  end
+
+  def Insurance_percentage=(insurance_percentage)
+    self.insurance_percentage = string_currency_locale_covert(insurance_percentage)
+  end
+
+  def Interest_percentage
+    format_currency_locale_covert(interest_percentage,self.currency)
+  end
+
+  def Interest_percentage=(interest_percentage)
+    self.interest_percentage = string_currency_locale_covert(interest_percentage)
+  end
+
+  def Amount
+    format_currency_locale_covert(amount,self.currency)
+  end
+
+  def Amount=(amount)
+    self.amount = string_currency_locale_covert(amount)
+  end
+
   # Bookkeep all repayments until today of given date which must anterior to
   # today. :id parameter permit to filter on wanted loans.
   def self.bookkeep_repayments(options = {})
@@ -200,27 +225,27 @@ class Loan < Ekylibre::Record::Base
 
     ids = []
     Calculus::Loan
-      .new(
-        amount,
-        repayment_duration,
-        interests:  { interest_amount:  interest_percentage  / 100.0 },
-        insurances: { insurance_amount: insurance_percentage / 100.0 },
-        period: period,
-        length: length,
-        shift: self.shift_duration,
-        shift_method: shift_method.to_sym,
-        insurance_method: insurance_repayment_method,
-        started_on: started_on
-      )
-      .compute_repayments(repayment_method)
-      .each do |repayment|
-        if r = repayments.find_by(position: repayment[:position])
-          r.update_attributes!(repayment)
-        else
-          r = repayments.create!(repayment)
-        end
-        ids << r.id
+        .new(
+            amount,
+            repayment_duration,
+            interests:  { interest_amount:  interest_percentage  / 100.0 },
+            insurances: { insurance_amount: insurance_percentage / 100.0 },
+            period: period,
+            length: length,
+            shift: self.shift_duration,
+            shift_method: shift_method.to_sym,
+            insurance_method: insurance_repayment_method,
+            started_on: started_on
+        )
+        .compute_repayments(repayment_method)
+        .each do |repayment|
+      if r = repayments.find_by(position: repayment[:position])
+        r.update_attributes!(repayment)
+      else
+        r = repayments.create!(repayment)
       end
+      ids << r.id
+    end
     repayments.destroy(repayments.where.not(id: ids))
     reload
   end

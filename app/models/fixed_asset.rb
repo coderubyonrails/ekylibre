@@ -100,6 +100,7 @@ class FixedAsset < Ekylibre::Record::Base
   validates :depreciation_method, inclusion: { in: depreciation_method.values }
   validates :asset_account, :expenses_account, presence: true
   enumerize :depreciation_period, in: %i[monthly quarterly yearly], default: -> { Preference.get(:default_depreciation_period).value || Preference.set!(:default_depreciation_period, :yearly, :string) }
+  validates :Depreciable_amount, :format => { :with => /\d{1,3}[\ ,\\.]?(\\d{1,2})?/}
 
   scope :drafts, -> { where(state: %w[draft]) }
 
@@ -229,6 +230,14 @@ class FixedAsset < Ekylibre::Record::Base
     end
   end
 
+  def Depreciable_amount
+    format_currency_locale_covert(depreciable_amount,self.currency)
+  end
+
+  def Depreciable_amount=(depreciable_amount)
+    self.depreciable_amount = string_currency_locale_covert(depreciable_amount)
+  end
+
   # This callback permits to add journal entry corresponding to the fixed asset when entering in use
   bookkeep do |b|
     label = tc(:bookkeep_in_use_assets, resource: self.class.model_name.human, number: number, name: name)
@@ -252,7 +261,7 @@ class FixedAsset < Ekylibre::Record::Base
         entry.add_debit(label, asset_account.id, amount.compact.sum, resource: self, as: :fixed_asset)
       end
 
-    # fixed asset link to nothing
+      # fixed asset link to nothing
     elsif in_use?
       # puts "without purchase".inspect.green
       b.journal_entry(journal, printed_on: started_on, if: (in_use? && asset_account)) do |entry|
@@ -260,7 +269,7 @@ class FixedAsset < Ekylibre::Record::Base
         entry.add_debit(label, asset_account.id, depreciable_amount, resource: self, as: :fixed_asset)
       end
 
-    # fixed asset sold or scrapped
+      # fixed asset sold or scrapped
     elsif (sold? && !sold_journal_entry) || (scrapped? && !scrapped_journal_entry)
 
       out_on = sold_on
@@ -360,14 +369,14 @@ class FixedAsset < Ekylibre::Record::Base
     new_months = (started_on...stopped_on).select(&first_day_of_month)
 
     case depreciation_period
-    when /monthly/
-      starts += new_months
-    when /quarterly/
-      new_trimesters = new_months.select { |date| date.month.multiple_of? 3 }
-      starts += new_trimesters
-    when /yearly/
-      new_years = new_months.select { |date| date.month == 1 }
-      starts += new_years
+      when /monthly/
+        starts += new_months
+      when /quarterly/
+        new_trimesters = new_months.select { |date| date.month.multiple_of? 3 }
+        starts += new_trimesters
+      when /yearly/
+        new_years = new_months.select { |date| date.month == 1 }
+        starts += new_years
     end
 
     starts = starts.uniq.sort
@@ -495,25 +504,25 @@ class FixedAsset < Ekylibre::Record::Base
         days += so
       end
 
-    # cursor = started_on.to_date
-    # if started_on == started_on.end_of_month or started_on.day >= 30
-    #   days += 1
-    #   cursor = started_on.end_of_month + 1
-    # elsif started_on.month == stopped_on.month and started_on.year == stopped_on.year
-    #   days += so - sa + 1
-    #   cursor = stopped_on
-    # elsif started_on != started_on.beginning_of_month
-    #   days += 30 - sa + 1
-    #   cursor = started_on.end_of_month + 1
-    # end
+      # cursor = started_on.to_date
+      # if started_on == started_on.end_of_month or started_on.day >= 30
+      #   days += 1
+      #   cursor = started_on.end_of_month + 1
+      # elsif started_on.month == stopped_on.month and started_on.year == stopped_on.year
+      #   days += so - sa + 1
+      #   cursor = stopped_on
+      # elsif started_on != started_on.beginning_of_month
+      #   days += 30 - sa + 1
+      #   cursor = started_on.end_of_month + 1
+      # end
 
-    # while (cursor >> 1).beginning_of_month < stopped_on.beginning_of_month
-    #   cursor = cursor >> 1
-    #   days += 30
-    # end
-    # if cursor < stopped_on
-    #   days += [30, (so - cursor.day + 1)].min
-    # end
+      # while (cursor >> 1).beginning_of_month < stopped_on.beginning_of_month
+      #   cursor = cursor >> 1
+      #   days += 30
+      # end
+      # if cursor < stopped_on
+      #   days += [30, (so - cursor.day + 1)].min
+      # end
     elsif options[:mode] == :linear
       days = (stopped_on - started_on) + 1
     else
