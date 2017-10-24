@@ -92,18 +92,12 @@ $.rails.href = function (element) {
 }
 
 Turbolinks.enableTransitionCache();
+Turbolinks.enableProgressBar();
 
-$(document).on("click", "a", function(e){
-    var data = $(this).attr('data-toggle');
-    var title = $(this).attr('title');
-
-    if((data == 'face' ) || (data == 'notifications')|| $(this).attr('data-toggle') == undefined && (!(title =='Menu')) && $(this).attr('data-toggle-snippet') == undefined && $(this).attr('data-beehive-task') == undefined && $(this).attr('data-method')== undefined  )
-    {
-        Turbolinks.enableProgressBar();
-        $('.turbolinkoverlay').css('display','block');
-    }
-});
 $(document).ready(function()
 {
     L.Icon.Default.imagePath = '/assets';
+    $(window).bind('page:before-change', function(e){
+        $('#main').prepend('<div class="turbolinkoverlay"></div>');
+    })
 });
