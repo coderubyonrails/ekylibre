@@ -2784,3 +2784,9 @@ a[data-annotate] {
 .display-pdf{
   margin-right: -3px !important;
 }
+
+a.share-btn{
+	i {
+    @include use-icon(share-alt);
+  }
+}
