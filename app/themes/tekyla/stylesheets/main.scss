@@ -2776,3 +2776,17 @@ a[data-annotate] {
 .label-important {
   color: $invalid-color;
 }
+
+.float-left{
+  float: left;
+}
+
+.display-pdf{
+  margin-right: -3px !important;
+}
+
+a.share-btn{
+	i {
+    @include use-icon(share-alt);
+  }
+}

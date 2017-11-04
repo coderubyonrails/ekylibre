@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sender: 1
+  nature: MyString
+  nature_id: 1
+  receiver: 1
+
+two:
+  sender: 1
+  nature: MyString
+  nature_id: 1
+  receiver: 1

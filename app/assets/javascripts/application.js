@@ -98,3 +98,7 @@ $(document).ready(function()
 {
     L.Icon.Default.imagePath = '/assets';
 });
+
+function open_pdf_new_window(pdf_path) {
+  window.open(pdf_path,"mywindow","menubar=1,resizable=1,width=700,height=600");
+}
