@@ -44,6 +44,16 @@ module Backend
       end
     end
 
+    def change_signature
+      permitted_params = params.require(:user).permit(:digital_signature)
+      if @user.update_attributes(permitted_params)
+        notify_success :update_is_done
+        redirect_to action: :show
+      else
+        render 'show'
+      end
+    end
+
     protected
 
     def find_resource

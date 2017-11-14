@@ -4,6 +4,7 @@
   - exports << :sales_order if resource.order?
   - exports << :sales_estimate if resource.estimate? || resource.draft? || resource.refused?
   = t.export(*exports, key: :number)
+  = link_to content_tag(:i)+" Share", "#", data: {toggle: 'modal', target: '#share-pdf'}, class: "btn btn-default share-btn", id: "share_pdf_link"
   = t.duplicate resource, method: :post, params: {redirect: nil}
   - if current_user.can?(:write, :outgoing_deliveries) && resource.can_generate_parcel?
     = t.new(resource, params: { controller: :parcels, sale_id: resource.id, nature: :outgoing }, label: :generate_parcel.tl)
@@ -64,3 +65,5 @@
   - if resource.credits.any?
     - c.cobble :credits do
       = cobble_list :credits
+
+= render "backend/shared/share_pdf"

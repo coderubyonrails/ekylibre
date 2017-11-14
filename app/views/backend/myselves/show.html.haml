@@ -15,3 +15,8 @@
       = f.input :password_confirmation
       = form_actions do
         = f.submit :update.ta, class: 'primary'
+  - c.cobble :digital_signature do
+    = simple_form_for([:backend, @user], url: change_signature_backend_myself_path, method: :patch) do |f|
+      = f.text_area :digital_signature,  :class => 'ckeditor'
+      = form_actions do
+        = f.submit :update.ta, class: 'primary'

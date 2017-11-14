@@ -6762,6 +6762,42 @@ ALTER SEQUENCE tokens_id_seq OWNED BY tokens.id;
 
 
 --
+-- Name: tours; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE tours (
+    id integer NOT NULL,
+    page character varying,
+    title character varying,
+    content character varying,
+    enabled boolean DEFAULT true,
+    "position" character varying,
+    language character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: tours_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tours_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tours_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tours_id_seq OWNED BY tours.id;
+
+
+--
 -- Name: trackings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -7933,6 +7969,13 @@ ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regcl
 --
 
 ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::regclass);
+
+
+--
+-- Name: tours id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tours ALTER COLUMN id SET DEFAULT nextval('tours_id_seq'::regclass);
 
 
 --
@@ -9122,6 +9165,14 @@ ALTER TABLE ONLY teams
 
 ALTER TABLE ONLY tokens
     ADD CONSTRAINT tokens_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tours tours_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tours
+    ADD CONSTRAINT tours_pkey PRIMARY KEY (id);
 
 
 --
@@ -17888,5 +17939,6 @@ INSERT INTO schema_migrations (version) VALUES ('20170831071726');
 
 INSERT INTO schema_migrations (version) VALUES ('20170831180835');
 
-INSERT INTO schema_migrations (version) VALUES ('20171010075206');
+INSERT INTO schema_migrations (version) VALUES ('20170918093638');
+
 

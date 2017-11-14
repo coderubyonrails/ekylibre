@@ -16,6 +16,25 @@
     .modal-body
       .placeholding-message= :no_archived_prints.tn
   .modal-footer
+    #display-pdf-items.float-left
+      .btn-group
+        %button.btn.btn-default.dropdown-toggle.display-pdf{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :type => "button"}
+          Display PDF
+        - if Document.of(nature.name, key).any?
+          - Document.of(nature.name, key).each do |document|
+            - @doc = document
+            %ul.dropdown-menu
+              %li
+                = link_to "New Tab", backend_document_path(document, format: :pdf), target: :_blank
+              %li
+                - pdf_path = "#{root_url}"+"#{backend_document_path(document, format: :pdf)}"[1..-1]
+                = link_to "New Window", "#", onclick: "open_pdf_new_window(\'#{pdf_path}\');"
+              %li
+                = link_to "PDF Viewer", backend_document_path(document, format: :pdf)
+
+        = link_to "Download PDF",backend_document_path(@doc, format: :pdf), download: backend_document_path(@doc), class: 'btn btn-default'
+  
+  
     - templates = DocumentTemplate.of_nature(nature.name.to_s)
     - if templates.any?
       = dropdown_menu_button(:print) do |menu|

@@ -1073,6 +1073,13 @@ module ApplicationHelper
 
     safe_join(result)
   end
+  
+  def bread_crumb_previous_url
+    url = Rails.application.routes.recognize_path(request.referrer)
+    last_controller = url[:controller].to_s.split('/')
+    last_action = url[:action]
+    "#{last_action.capitalize} #{last_controller[1].singularize}"
+  end
 
   private
 

@@ -114,6 +114,7 @@ Rails.application.routes.draw do
     resource :myself, path: 'me', only: %i[show update] do
       member do
         patch :change_password
+        patch :change_signature
       end
     end
 
@@ -906,6 +907,9 @@ Rails.application.routes.draw do
     resources :sales, concerns: %i[list unroll] do
       collection do
         get :contacts
+        get :download_pdf, :defaults => { :format => 'pdf' }
+        post :change_signature
+        post :send_invoice_mail
       end
       member do
         get :cancel

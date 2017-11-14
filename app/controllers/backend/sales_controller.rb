@@ -285,5 +285,62 @@ module Backend
       @sale.refuse
       redirect_to action: :show, id: @sale.id
     end
+    
+    def download_pdf
+      return unless @sale = find_and_check
+      @sale.other_deals
+      document = Document.find_by_key(params[:key])
+      unless document.present?
+        respond_with(@sale, methods: %i[taxes_amount affair_closed client_number sales_conditions sales_mentions],
+                            include: { address: { methods: [:mail_coordinate] },
+                                       nature: { include: { payment_mode: { include: :cash } } },
+                                       supplier: { methods: [:picture_path], include: { default_mail_address: { methods: [:mail_coordinate] }, websites: {}, emails: {}, mobiles: {} } },
+                                       responsible: {},
+                                       credits: {},
+                                       parcels: { methods: %i[human_delivery_mode human_delivery_nature items_quantity], include: {
+                                         address: {},
+                                         sender: {},
+                                         recipient: {}
+                                       } },
+                                       affair: { methods: [:balance], include: [incoming_payments: { include: :mode }] },
+                                       invoice_address: { methods: [:mail_coordinate] },
+                                       items: { methods: %i[taxes_amount tax_name tax_short_label], include: [:variant, parcel_items: { include: %i[product parcel] }] } }) do |format|
+          format.js { render :nothing => true }
+        end
+      else
+        respond_to do |format|
+          format.pdf { render :nothing => true }
+        end
+      end
+    end
+
+    def change_signature
+      user = User.find(current_user.id)
+      user.update_attributes(:digital_signature => params[:digital_signature])
+      respond_to do |format|
+        format.json { render json: { data: user.digital_signature.to_json } }
+        format.js { render :nothing => true }
+      end
+    end
+
+    def send_invoice_mail
+      subject = params[:subject]
+      share = Share.insert_data(params[:send_to],current_user,params[:nature_id])
+      document = Document.where(:creator_id => current_user.id, :key => params[:sale_key]).last
+      respond_to do |format|
+        if share.errors.present?
+          # format.json { render json: { data: share.errors[:receiver], success: :true } }
+          format.json {render json: { message: "Validation failed", errors: "Enter valid email id" }, status: 400}
+          # render json: share.errors[:receiver], success: :false
+          format.js { render :nothing => true }
+        else
+          PrintedInvoiceMailer.notify_sender(share, subject, params, document).deliver_now
+          format.json { head :ok }
+          format.js { render :nothing => true }
+        end
+
+      end
+    end
+
   end
 end
