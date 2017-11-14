@@ -196,6 +196,7 @@ gem 'luhn'
 
 # For interval selector
 gem 'bootstrap-slider-rails'
+gem 'ckeditor_rails'
 
 group :development do
   gem 'bullet', '< 5.6.0'

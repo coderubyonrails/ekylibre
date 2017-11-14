@@ -89,7 +89,64 @@
     else
       console.warn "Cannot get variant ID"
 
-
+  # edit signature in shared pdf
+  $(document).on "click", "#signature", (e)->
+    $('#add-signature').show()
+    $('#share-pdf').hide()
+    return
+  
+  $(document).on "click", "#update-signature", (e)->
+    value = CKEDITOR.instances['editor2'].getData()
+    $.ajax
+      url: '/backend/sales/change_signature'
+      type: 'POST'
+      dataType: 'json'
+      data: digital_signature: value
+      success: (data) ->
+        CKEDITOR.instances.editor2.setData value
+        $('#add-signature').hide()
+        $('#share-pdf').show()
+        CKEDITOR.instances.editor1.setData value
+        return
+    return
+  $(document).on "click", "#send-email", (e)->
+    value = CKEDITOR.instances['editor1'].getData()
+    send_to = $('#send-to').val()
+    subject = $('#subject').val()
+    nature_id = $('#nature_id').val()
+    file_name = $('#pdf-file-name').val()
+    sale_key = $('#pdf-file-name').attr 'sale_key'
+    $.ajax
+      url: '/backend/sales/send_invoice_mail'
+      type: 'POST'
+      dataType: 'script'
+      data:
+        mail_content: value
+        send_to: send_to
+        subject: subject
+        nature_id: nature_id
+        file_name: file_name
+        sale_key: sale_key
+      success: (data) ->
+        $('#share-pdf').hide()
+        $('.modal-backdrop').hide()
+        return
+    return
+  $(document).on "click", "#share_pdf_link", (e)->
+    sale_key = $('#pdf-file-name').attr('sale_key')
+    sale_id = $('#sale_id').val()
+    template_id = $('#template_id').val()
+    $.ajax
+      url: '/backend/sales/download_pdf'
+      type: 'GET'
+      data:
+        key: sale_key
+        id: sale_id
+        template: '3'
+      success: (data) ->
+        $('#share-pdf').show()
+        return
+    return
   E.trade =
 
     round: (value, digits) ->

@@ -74,6 +74,7 @@
 //= require rbush
 //= require autosize
 //= require plugins
+//= require ckeditor-jquery
 //= require_tree .
 //= require tour
 //= require bootstrap-slider
