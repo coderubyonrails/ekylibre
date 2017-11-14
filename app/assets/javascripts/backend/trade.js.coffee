@@ -116,21 +116,26 @@
     nature_id = $('#nature_id').val()
     file_name = $('#pdf-file-name').val()
     sale_key = $('#pdf-file-name').attr 'sale_key'
-    $.ajax
-      url: '/backend/sales/send_invoice_mail'
-      type: 'POST'
-      dataType: 'script'
-      data:
-        mail_content: value
-        send_to: send_to
-        subject: subject
-        nature_id: nature_id
-        file_name: file_name
-        sale_key: sale_key
-      success: (data) ->
-        $('#share-pdf').hide()
-        $('.modal-backdrop').hide()
-        return
+    pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+    if !pattern.test(send_to)
+      $("#invalid").show();
+    else
+      $.ajax
+        url: '/backend/sales/send_invoice_mail'
+        type: 'POST'
+        dataType: 'script'
+        data:
+          mail_content: value
+          send_to: send_to
+          subject: subject
+          nature_id: nature_id
+          file_name: file_name
+          sale_key: sale_key
+        success: (data) ->
+          $("#invalid").show();
+          $('#share-pdf').hide()
+          $('.modal-backdrop').hide()
+          return
     return
   $(document).on "click", "#share_pdf_link", (e)->
     sale_key = $('#pdf-file-name').attr('sale_key')

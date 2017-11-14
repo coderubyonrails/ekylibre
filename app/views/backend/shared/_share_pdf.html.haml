@@ -10,6 +10,7 @@
           %span Send To
           %span 
             %input#send-to{:type => "text"}
+            %span.help-inline#invalid{:style => "display:none"} Invalid Email
             = hidden_field_tag :nature_id, "", :value => @sale.nature_id
             = hidden_field_tag :sale_id, "", :value => @sale.id
             = hidden_field_tag :template_id, "", :value => @template_id
