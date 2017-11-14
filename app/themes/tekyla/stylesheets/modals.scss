@@ -2,13 +2,17 @@
   .modal-dialog {
     .modal-content {
       .modal-header {
+      .modal-title.float-left
+      {
+          float: left;
+          font-size: $fs-large !important;
+          font-weight: bold;
+      }
         .close[data-dismiss='modal'] {
           @include float(right);
           background: none;
           border: none;
-          span {
-            font-size: $fs-large;
-          }
+          font-size: $fs-large !important;
         }
         h4 {
           font-weight: bold;
