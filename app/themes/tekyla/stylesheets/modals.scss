@@ -1,20 +1,54 @@
 .modal {
+
   .modal-dialog {
     .modal-content {
+
+        border-radius: 10px;
+        border: 7px solid rgba(0,0,0,0.5);
       .modal-header {
+          background: $base-color;
+      .modal-title.float-left
+      {
+          float: left;
+          font-size: $fs-large !important;
+          font-weight: bold;
+          color: white;
+      }
         .close[data-dismiss='modal'] {
           @include float(right);
           background: none;
           border: none;
-          span {
-            font-size: $fs-large;
-          }
+          font-size: $fs-large !important;
         }
         h4 {
           font-weight: bold;
         }
       }
       .modal-body {
+        .emailsendto{
+            #send-to{
+                  margin-left: 12px;
+                  width: 220px;
+                 
+                    }
+                  }
+         .emailsubject{
+          margin-top: 10px;
+         #subject{
+           margin-left: 15px;
+           width: 220px;
+         }
+
+         } 
+         .emaileditor{
+              padding: 10px 0px 10px 0px;
+         }  
+        .attachmentfile {
+          margin-top: 10px;
+          #pdf-file-name{
+            background: $desktop-background;
+           }      
+          }
         .modal-introduction {
           padding: $default-gap * 2;
         }
@@ -29,7 +63,15 @@
         }
       }
       .modal-footer {
-        @include text-align(right);
+        background: $base-color;
+        @include text-align(center);
+        #send-email{
+          margin-right: 15px;
+
+        }
+        #update-signature{
+          margin-right: 15px;
+         }
       }
     }
   }

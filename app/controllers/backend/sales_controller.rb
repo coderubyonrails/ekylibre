@@ -328,17 +328,9 @@ module Backend
       share = Share.insert_data(params[:send_to],current_user,params[:nature_id])
       document = Document.where(:creator_id => current_user.id, :key => params[:sale_key]).last
       respond_to do |format|
-        if share.errors.present?
-          # format.json { render json: { data: share.errors[:receiver], success: :true } }
-          format.json {render json: { message: "Validation failed", errors: "Enter valid email id" }, status: 400}
-          # render json: share.errors[:receiver], success: :false
-          format.js { render :nothing => true }
-        else
-          PrintedInvoiceMailer.notify_sender(share, subject, params, document).deliver_now
-          format.json { head :ok }
-          format.js { render :nothing => true }
-        end
-
+        PrintedInvoiceMailer.notify_sender(share, subject, params, document).deliver_now
+        format.json { head :ok }
+        format.js { render :nothing => true }
       end
     end
 

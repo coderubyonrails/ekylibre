@@ -152,6 +152,11 @@
         $('#share-pdf').show()
         return
     return
+  $(document).on "click", "#closepopup", (e)->    
+    $('#share-pdf').hide() 
+    $('.modal-backdrop').hide()   
+    return  
+  
   E.trade =
 
     round: (value, digits) ->
