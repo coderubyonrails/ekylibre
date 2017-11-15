@@ -6,7 +6,7 @@
         .modal-title.float-left New email
         %button.close{"data-dismiss" => "modal"} x
       .modal-body
-        .form-group
+        .emailsendto
           %span Send To
           %span 
             %input#send-to{:type => "text"}
@@ -14,35 +14,39 @@
             = hidden_field_tag :nature_id, "", :value => @sale.nature_id
             = hidden_field_tag :sale_id, "", :value => @sale.id
             = hidden_field_tag :template_id, "", :value => @template_id
-        .form-group
+        .emailsubject
           %span Subject
           %span 
             %input.form-control#subject{:type => "text"}
-        .form-group
+        .emaileditor
           %textarea#editor1.ckeditor{:name => "editor1"} 
-            #{current_user.digital_signature}
-      .modal-footer
-        %span 
-          %input.form-control#pdf-file-name{:type => "text", :value => "original.pdf", :sale_key => @sale.number}
+            #{current_user.digital_signature}  
         - if current_user.digital_signature.blank?
-          %button.btn.btn-secondary#signature Add Signature
+          %button.btn.btn-secondary#signature Add signature
         - else
-          %button.btn.btn-secondary#signature Edit Signature
+          %button.btn.btn-secondary#signature Edit signature
+        .attachmentfile 
+          %input.form-control#pdf-file-name{:type => "text", :value => "original.pdf", :sale_key => @sale.number}
+      .modal-footer
+        
         %button.btn.btn-secondary#send-email Send
+        %button.btn.btn-secondary#closepopup Cancel
         / %button.btn.btn-primary Save changes
 #add-signature.modal.fade{:role => "dialog"}
   .modal-dialog.aligned-popup
     .modal-content
       .modal-header
-        %modal-title.float-left Add New Signature
+        .modal-title.float-left Add New Signature
         %button.close{"data-dismiss" => "modal"} x
       .modal-body
-        .form-group
+        .emailcontent
           %textarea#editor2.ckeditor{:name => "editor2"} 
             #{current_user.digital_signature}
       .modal-footer
         - if current_user.digital_signature.blank?
           %button.btn.btn-secondary#update-signature Save
+          %button.btn.btn-secondary#closepopup2 Cancel
         - else
           %button.btn.btn-secondary#update-signature Update
+          %button.btn.btn-secondary#close Cancel
         / %button.btn.btn-primary Save changes
