@@ -17,7 +17,7 @@
         .form-group
           %span Subject
           %span 
-            %input.form-control#subject{:type => "text"}
+            %input.form-control#subject{:type => "text", :value => "#{@sale.client.name} #{@sale.number} invoice", :disabled => "disabled"}
         .form-group
           %textarea#editor1.ckeditor{:name => "editor1"} 
             #{current_user.digital_signature}
