@@ -3,8 +3,8 @@
 
 
   closeflash = () ->
-    #$('.flash-overlay').remove();
-    #$('.flash').remove();
+    $('.flash-overlay').remove();
+    $('.flash').remove();
 
   E.notifications =
     delay: 60

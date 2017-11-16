@@ -1149,8 +1149,10 @@ html.backend {
   @include border-radius($default-border-radius);
   @include incrust-shadow;
   .icon {
-    @include is-icon($lh-normal);
-    display: none;
+    width: 40% !important;
+    margin-top: 30px !important;
+    @include is-icon($fs-very-huge);
+    display: block;
     vertical-align: middle;
     @include margin-right($default-gap);
   }
@@ -1159,14 +1161,15 @@ html.backend {
   }
   .message {
     &, * {
+      width: 60%;
       display: inline-block;
       vertical-align: baseline;
       font-size: $fs-normal;
       line-height: $lh-normal;
       text-align: left;
       vertical-align: middle;
-      margin-right: 30px;
       margin: 0 auto;
+      margin-top: -64px;
     }
     h3 {
       font-weight: bold;
@@ -1189,7 +1192,7 @@ html.backend {
     }
   }
   $opacity: 0.2;
-  @each $level in (error $invalid-color times-circle), (warning $caution-color exclamation-circle), (success $success-color check-circle), (information $active-color info-circle) {
+  @each $level in (error $invalid-color close), (warning $caution-color exclamation), (success $success-color check), (information $active-color info) {
                                                                                                                                              $level-name: nth($level, 1);
                                                                                                                                              $level-color: nth($level, 2); // change-color(nth($level, 2), $lightness: 65%);
                                                                                                                                              &.#{$level-name} {
@@ -1219,13 +1222,13 @@ html.backend {
 }
 
 .flash.success {
-  background: rgba(221, 232, 204, 0.88) !important;
+  background: rgba(239, 241, 235, 1) !important
 }
 .flash.warning {
   background: rgba(236, 204, 131, 0.88) !important;
 }
 .flash.error {
-  background: rgba(236, 140, 128, 0.88) !important;
+  background: rgba(245, 241, 240, 1) !important;
 }
 .flash.information {
   background: rgba(208, 223, 253, 0.88) !important;
