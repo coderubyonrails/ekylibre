@@ -147,7 +147,7 @@
       data:
         key: sale_key
         id: sale_id
-        template: '3'
+        template: template_id
       success: (data) ->
         $('#share-pdf').show()
         return
