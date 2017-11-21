@@ -97,6 +97,10 @@ accounts:
   number:
     type: string
     required: true
+  radical:
+    type: boolean
+    required: true
+    default: false
   reconcilable:
     type: boolean
     required: true

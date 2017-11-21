@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<migration name="Update radical accounts">
+  <property-creation property="accounts.radical" type="boolean" default="false"/>
+  <item-change item="accounts#capitals" radical="true"/>
+  <item-change item="accounts#expenses" radical="true"/>
+  <item-change item="accounts#finances" radical="true"/>
+  <item-change item="accounts#financial_year_result" radical="true"/>
+  <item-change item="accounts#fixed_assets" radical="true"/>
+  <item-change item="accounts#stocks" radical="true"/>
+  <item-change item="accounts#third_party" radical="true"/>
+  <item-change item="accounts#revenues" radical="true"/>
+</migration>

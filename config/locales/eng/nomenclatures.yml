@@ -516,6 +516,7 @@ eng:
         fr_pcg82: "French PCG82"
         fr_pcga: "French PCGA"
         pt_snc: "Protuguese SNC"
+        # radical: "Radical"
     activity_families:
       choices:
         nature:

@@ -251,7 +251,7 @@ class JournalEntryTest < ActiveSupport::TestCase
     sale_item = create(:sale_item, sale: sale)
     sale.propose
     sale.invoice
-    journal_entry = JournalEntry.where(resource_id: sale.id, resource_type: "Sale").first
+    journal_entry = JournalEntry.where(resource_id: sale.id, resource_type: 'Sale').first
     assert_equal sale.number, journal_entry.reference_number
   end
 end

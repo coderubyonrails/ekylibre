@@ -17,7 +17,7 @@ class AddReferenceNumberToJournalEntriesAndUpdateExistingRecords < ActiveRecord:
       end
 
       d.down do
-        #NOOP
+        # NOOP
       end
     end
   end

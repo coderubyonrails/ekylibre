@@ -33,6 +33,7 @@
 #  lock_version  :integer          default(0), not null
 #  name          :string           not null
 #  number        :string           not null
+#  radical       :boolean          default(FALSE), not null
 #  reconcilable  :boolean          default(FALSE), not null
 #  updated_at    :datetime         not null
 #  updater_id    :integer
