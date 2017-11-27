@@ -145,6 +145,11 @@ Rails.application.routes.draw do
 
     # resources :calculators, only: :index
 
+    namespace :cobbles do
+      resource :production_cost_cobble, only: :show
+      resource :stock_in_ground_cobble, only: :show
+    end
+
     namespace :cells do
       resource :accountancy_balance_cell, only: :show
       resource :cashes_balance_cell, only: :show
@@ -228,7 +233,6 @@ Rails.application.routes.draw do
     resources :activity_productions, concerns: [:unroll] do
       member do
         get :list_interventions
-        get :list_target_distributions
       end
     end
 
@@ -703,10 +707,11 @@ Rails.application.routes.draw do
 
     resources :map_editors, only: [] do
       collection do
-        get :shapes, format: :json
         post :upload
       end
     end
+
+    resources :map_editor_shapes, only: :index
 
     resources :matters, concerns: :products
 
@@ -787,7 +792,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :products, concerns: [:products]
+    resources :products, concerns: %i[products many]
 
     resources :inspections, concerns: %i[list unroll] do
       member do
@@ -968,11 +973,6 @@ Rails.application.routes.draw do
         post :run
       end
     end
-    resources :target_distributions, concerns: %i[list many], path: 'target-distributions' do
-      collection do
-        get :list_intervention_product_parameters
-      end
-    end
 
     resources :tasks, concerns: [:list] do
       member do
@@ -1020,6 +1020,13 @@ Rails.application.routes.draw do
 
     resources :visuals, only: [] do
       match 'picture(/:style)', via: :get, action: :picture, as: :picture
+    end
+
+    namespace :visualizations do
+      resource :plants_visualizations, only: :show
+      resource :map_cells_visualizations, only: :show
+      resource :land_parcels_visualizations, only: :show
+      resource :resources_visualizations, only: :show
     end
 
     resources :wine_tanks, only: [:index], concerns: [:list]

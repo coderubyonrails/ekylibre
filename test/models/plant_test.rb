@@ -22,6 +22,7 @@
 #
 # == Table: products
 #
+#  activity_production_id       :integer
 #  address_id                   :integer
 #  birth_date_completeness      :string
 #  birth_farm_number            :string
@@ -96,7 +97,7 @@ class PlantTest < ActiveSupport::TestCase
 
   test 'sets' do
     p = Plant.last
-    assert_equal '1.955 hectare', p.net_surface_area.to_s
+    assert_equal '1.959 hectare', p.net_surface_area.to_s
   end
 
   test 'shape render value' do
