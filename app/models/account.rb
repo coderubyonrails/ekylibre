@@ -292,14 +292,12 @@ class Account < Ekylibre::Record::Base
       raise ArgumentError, "The usage #{usage.inspect} is unknown" unless item
       raise ArgumentError, "The usage #{usage.inspect} is not implemented in #{accounting_system.inspect}" unless item.send(accounting_system)
       account = find_in_nomenclature(usage)
-      unless account
-        account = create!(
-          name: item.human_name,
-          number: item.send(accounting_system),
-          debtor: !!item.debtor,
-          usages: item.name
-        )
-      end
+      account ||= create!(
+        name: item.human_name,
+        number: item.send(accounting_system),
+        debtor: !!item.debtor,
+        usages: item.name
+      )
       account
     end
     alias import_from_nomenclature find_or_import_from_nomenclature
@@ -445,7 +443,6 @@ class Account < Ekylibre::Record::Base
     items = journal_entry_items.where(conditions)
     return nil unless item_ids.size > 1 && items.count == item_ids.size &&
                       items.collect { |l| l.debit - l.credit }.sum.to_f.zero?
-    letter ||= items.order(:letter).pluck(:letter).compact.first
     letter ||= new_letter
     journal_entry_items.where(conditions).update_all(letter: letter)
     letter
