@@ -1,5 +1,3 @@
-# coding: utf-8
-
 # = Informations
 #
 # == License
@@ -77,8 +75,10 @@
 class User < Ekylibre::Record::Base
   # No point accepted in preference name
   PREFERENCE_SHOW_MAP_INTERVENTION_FORM = 'show_map_on_intervention_form'.freeze
+  PREFERENCE_SHOW_EXPORT_PREVIEW        = 'show_export_preview'.freeze
   PREFERENCES = {
-    PREFERENCE_SHOW_MAP_INTERVENTION_FORM => :boolean
+    PREFERENCE_SHOW_MAP_INTERVENTION_FORM => :boolean,
+    PREFERENCE_SHOW_EXPORT_PREVIEW => :boolean
   }.freeze
   include Rightable
   refers_to :language
