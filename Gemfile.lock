@@ -569,7 +569,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack-xml_parser
-  
+  active_list (>= 6.9.3)
   activerecord-postgis-adapter (>= 3.0.0)
   acts_as_list
   agric (~> 3.0)
