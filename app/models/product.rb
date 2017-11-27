@@ -22,6 +22,7 @@
 #
 # == Table: products
 #
+#  activity_production_id       :integer
 #  address_id                   :integer
 #  birth_date_completeness      :string
 #  birth_farm_number            :string
@@ -73,6 +74,7 @@
 #  picture_file_name            :string
 #  picture_file_size            :integer
 #  picture_updated_at           :datetime
+#  reading_cache                :jsonb            default("{}")
 #  team_id                      :integer
 #  tracking_id                  :integer
 #  type                         :string
@@ -107,12 +109,13 @@ class Product < Ekylibre::Record::Base
   belongs_to :person, -> { contacts }, class_name: 'Entity'
   belongs_to :tracking
   belongs_to :variant, class_name: 'ProductNatureVariant'
+  # belongs_to :production, class_name: 'ActivityProduction'
+  belongs_to :activity_production
   has_many :activity_productions, foreign_key: :support_id
   has_many :analyses, class_name: 'Analysis', dependent: :restrict_with_exception
   has_many :carrier_linkages, class_name: 'ProductLinkage', foreign_key: :carried_id, dependent: :destroy
   has_many :content_localizations, class_name: 'ProductLocalization', foreign_key: :container_id
   has_many :contents, class_name: 'Product', through: :content_localizations, source: :product
-  has_many :distributions, class_name: 'TargetDistribution', foreign_key: :target_id, inverse_of: :target, dependent: :destroy
   has_many :enjoyments, class_name: 'ProductEnjoyment', foreign_key: :product_id, dependent: :destroy
   has_many :fixed_assets, inverse_of: :product
   # has_many :groups, :through => :memberships
@@ -205,7 +208,7 @@ class Product < Ekylibre::Record::Base
   }
 
   scope :of_production, lambda { |production|
-    where(id: TargetDistribution.select(:target_id).where(activity_production: production))
+    where(activity_production: production)
   }
   scope :of_productions, lambda { |*productions|
     of_productions(productions.flatten)
@@ -297,9 +300,19 @@ class Product < Ekylibre::Record::Base
   validate :born_at_in_interventions, if: ->(product) { product.born_at? && product.interventions_used_in.pluck(:started_at).any? }
   validate :dead_at_in_interventions, if: ->(product) { product.dead_at? && product.interventions.pluck(:stopped_at).any? }
 
+  store :reading_cache, accessors: Nomen::Indicator.all, coder: ReadingsCoder
+
   # [DEPRECATIONS[
   #  - fixed_asset_id
   # ]DEPRECATIONS]
+  def read_store_attribute(store_attribute, key)
+    store = send(store_attribute)
+    if store.key?(key)
+      super
+    else
+      get(key)
+    end
+  end
 
   def born_at_in_interventions
     return true unless first_intervention = interventions_used_in.order(started_at: :asc).first
@@ -345,6 +358,7 @@ class Product < Ekylibre::Record::Base
     self.initial_born_at = self.born_at
     self.initial_dead_at = dead_at
     self.uuid ||= UUIDTools::UUID.random_create.to_s
+    # self.net_surface_area = initial_shape.area.in(:hectare).round(3)
   end
 
   before_validation :set_default_values, on: :create
@@ -398,8 +412,8 @@ class Product < Ekylibre::Record::Base
     end
   end
 
-  def production(at = nil)
-    distributions.at(at || Time.zone.now).first
+  def production(_at = nil)
+    activity_production
   end
 
   def activity
@@ -411,7 +425,7 @@ class Product < Ekylibre::Record::Base
   end
 
   def best_activity_production(_options = {})
-    ActivityProduction.where(support: self).order(id: :desc).first
+    activity_production
   end
 
   # TODO: Removes this ASAP
@@ -444,6 +458,7 @@ class Product < Ekylibre::Record::Base
   end
 
   # set initial owner and localization
+  # after_save
   def set_initial_values
     # Add first owner on a product
     ownership = ownerships.first_of_all || ownerships.build
@@ -493,6 +508,13 @@ class Product < Ekylibre::Record::Base
         reading.save!
       end
     end
+  end
+
+  def shape=(new_shape)
+    reading_cache[:shape] = new_shape
+    reading_cache[:net_surface_area] = calculate_net_surface_area
+
+    shape
   end
 
   # Try to find the best name for the new products
@@ -692,16 +714,18 @@ class Product < Ekylibre::Record::Base
     containeds.select { |p| p.variant == variant }
   end
 
-  # Returns value of an indicator if its name correspond to
-  def method_missing(method_name, *args)
-    if Nomen::Indicator.all.include?(method_name.to_s.gsub(/\!\z/, ''))
-      if method_name.to_s.end_with?('!')
-        return get!(method_name.to_s.gsub(/\!\z/, ''), *args)
-      else
-        return get(method_name, *args)
-      end
+  Nomen::Indicator.each do |indicator|
+    alias_method :"cache_#{indicator}", indicator
+
+    define_method indicator.to_sym do |*args|
+      return get(indicator, *args) if args.present?
+      send(:"cache_#{indicator}")
     end
-    super
+
+    define_method :"#{indicator}!" do |*args|
+      return get!(indicator, *args) if args.present?
+      send(:"cache_#{indicator}")
+    end
   end
 
   # Create a new product parted from self
@@ -764,9 +788,17 @@ class Product < Ekylibre::Record::Base
     list
   end
 
+  def net_surface_area
+    computed_surface = reading_cache[:net_surface_area] || reading_cache['net_surface_area']
+    return computed_surface if computed_surface
+    calculated = calculate_net_surface_area
+    update(reading_cache: reading_cache.merge(net_surface_area: calculated))
+    self.net_surface_area = calculated
+  end
+
   # Override net_surface_area indicator to compute it from shape if
   # product has shape indicator unless options :strict is given
-  def net_surface_area(options = {})
+  def calculate_net_surface_area(options = {})
     # TODO: Manage global preferred surface unit or system
     area_unit = options[:unit] || :hectare
     if !options.keys.detect { |k| %i[gathering interpolate cast].include?(k) } &&
@@ -775,10 +807,26 @@ class Product < Ekylibre::Record::Base
         options[:at] = born_at if born_at && born_at > Time.zone.now
       end
       shape = get(:shape, options)
-      area = shape.area.in(area_unit).round(3) if shape
+      area = shape.area.in(:square_meter).in(area_unit).round(3) if shape
     else
       area = get(:net_surface_area, options)
     end
     area || 0.in(area_unit)
+  end
+
+  def initial_shape_area
+    ::Charta.new_geometry(initial_shape).area.in_square_meter
+  end
+
+  def get(indicator, *args)
+    return super if args.any?(&:present?)
+    in_cache = reading_cache[indicator.to_s]
+    return in_cache if in_cache
+    indicator_value = super
+    reading_cache[indicator.to_s] = indicator_value
+    unless new_record?
+      update_column(:reading_cache, reading_cache.merge(indicator.to_s => indicator_value))
+    end
+    indicator_value
   end
 end

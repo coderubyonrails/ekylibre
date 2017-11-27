@@ -559,6 +559,7 @@ fra:
       show: "Production\_: %{name}" #?
     backend/products:
       edit: "Modifier un produit"
+      edit_many: "Distribuer les produits non affectés"
       index: "Produits"
       new: "Créer un produit"
       show: "%{nature}\_: %{name}"
@@ -670,12 +671,12 @@ fra:
       index: "Synchronisations"
       run: "Lancer une synchronization: %{name}"
       show: "Synchronisation: %{name}" #?
-    backend/target_distributions:
-      edit: "Modifier la répartition:"
-      edit_many: "Distribuer les produits non affectés"
-      index: "Répartitions"
-      new: "Nouvelle répartition"
-      show: "Répartition:"
+    backend/target_distributions: #?
+      edit: "Modifier la répartition:" #?
+      edit_many: "Distribuer les produits non affectés" #?
+      index: "Répartitions" #?
+      new: "Nouvelle répartition" #?
+      show: "Répartition:" #?
     backend/tasks:
       edit: "Modifier la tâche\_: %{name}"
       index: "Tâches"
@@ -1873,6 +1874,7 @@ fra:
     purchase: "Achat"
     purchase_items: "Lignes de l’achat"
     purchase_number: "N° d’achat"
+    purchase_payments: "Décaissements"
     purchase_steps: #?
       deliveries: "Livraisons" #?
       products: "Création de l’achat" #?
@@ -2297,7 +2299,7 @@ fra:
     vat_paid: "TVA DEDUCTIBLE" #?
     video: "Vidéo" #?
     view: "Affichage"
-    view_map_when_creating_an_intervention: "Afficher la carte lors de la création d'intervention"
+    view_map_when_creating_an_intervention: "Afficher la carte lors de la création d'interventions"
     view_modes: #?
       printable: "Mode «\_Imprimable\_»" #?
       resized: "Mode «\_Tout à l’écran\_»" #?
@@ -2552,6 +2554,7 @@ fra:
       equipment_component_is_worn_out: "Le composant %{component_name} de l’équipement %{equipment_name} est usé. Temps de travail restant: %{remaining_time}."
       equipment_is_at_end_of_life: "L’équipment %{name} approche la fin de sa vie. Temps restant: %{remaining_time}."
       equipment_is_worn_out: "L’équipement %{name} est usé. Temps de travail restant: %{remaining_time}."
+      error_client_account_empty: "Opération impossible, le compte client est vide"
       error_during_file_generation: "Une erreur est survenue durant la génération d'un fichier"
       expired_session: "Session expirée. Veuillez vous reconnecter." #?
       fails_to_extract_listing: "L’extraction n’a pas pu s’effectuer\_: %{message}"
@@ -2787,7 +2790,7 @@ fra:
       set: "Définir" #?
       ship: "Expédier"
       show: "Afficher"
-      # show_export_preview: "View a preview of the document (may increase loading time)"
+      show_export_preview: "Afficher un aperçu du document (peut augmenter le temps de chargement)"
       sort: "Trier"
       star: "Étoile"
       start: "Commencer"
