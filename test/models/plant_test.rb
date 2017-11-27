@@ -22,6 +22,7 @@
 #
 # == Table: products
 #
+#  activity_production_id       :integer
 #  address_id                   :integer
 #  birth_date_completeness      :string
 #  birth_farm_number            :string
@@ -73,6 +74,7 @@
 #  picture_file_name            :string
 #  picture_file_size            :integer
 #  picture_updated_at           :datetime
+#  reading_cache                :jsonb            default("{}")
 #  team_id                      :integer
 #  tracking_id                  :integer
 #  type                         :string
@@ -91,5 +93,15 @@ class PlantTest < ActiveSupport::TestCase
     Plant.find_each do |plant|
       assert %i[go caution stop].include?(plant.status)
     end
+  end
+
+  test 'sets' do
+    p = Plant.last
+    assert_equal '1.959 hectare', p.net_surface_area.to_s
+  end
+
+  test 'shape render value' do
+    p = Plant.last
+    assert !p.shape.nil?
   end
 end
