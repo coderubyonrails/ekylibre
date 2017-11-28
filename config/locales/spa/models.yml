@@ -154,6 +154,7 @@ spa:
             started_on:
               consecutive: "Los ejercicios deben ser consecutivos. Debe comenzar tras el fin de la anterior."
               frozen: "La fecha de ejercicio no se puede cambiar cuando se ha creado un intercambio."
+              # on_or_after: "The date selected must be posterior to society's creation date (%{restriction})"
             stopped_on:
               # end_of_month: "%{attribute} must be an end of month"
           # overlap: "%{attribute} overlaps an existing financial year"
@@ -687,6 +688,7 @@ spa:
     device_uid: "UID dispositivo"
     direct_links: "Los enlaces directos"
     direction: "Dirección"
+    distributed_on_productions: "Distribuido en producciones"
     distributions: "Distribuciones"
     district: "Distrito"
     division: "X" #?
@@ -1257,6 +1259,7 @@ spa:
     query: "Consulta"
     rank_number: "Número de rango"
     read_at: "Lea por lo"
+    reading_cache: "Lectura del caché"
     reading_tasks: "Tareas de lectura"
     readings: "Lecturas"
     real_balance: "Equilibrio real"
@@ -1483,8 +1486,11 @@ spa:
     tool: "Herramienta"
     tools: "Instrumentos"
     total_cost: "Coste total"
+    total_doer_cost: "Costo total del hacedor"
+    total_input_cost: "Costo total de entrada"
     total_items_count: "Cuentan artículos totales"
     total_net_mass: "masa neta total"
+    total_tool_cost: "Costo total de la herramienta"
     town_number: "Número ciudad"
     tracking: "Rastreo"
     trackings: "Trackings"
