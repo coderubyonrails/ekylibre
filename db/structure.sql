@@ -6234,6 +6234,71 @@ ALTER SEQUENCE sequences_id_seq OWNED BY sequences.id;
 
 
 --
+-- Name: share_contacts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE share_contacts (
+    id integer NOT NULL,
+    email character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: share_contacts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE share_contacts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: share_contacts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE share_contacts_id_seq OWNED BY share_contacts.id;
+
+
+--
+-- Name: shares; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE shares (
+    id integer NOT NULL,
+    sender character varying,
+    nature character varying,
+    nature_id integer,
+    receiver character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: shares_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE shares_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: shares_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE shares_id_seq OWNED BY shares.id;
+
+
+--
 -- Name: subscription_natures; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -6762,42 +6827,6 @@ ALTER SEQUENCE tokens_id_seq OWNED BY tokens.id;
 
 
 --
--- Name: tours; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE tours (
-    id integer NOT NULL,
-    page character varying,
-    title character varying,
-    content character varying,
-    enabled boolean DEFAULT true,
-    "position" character varying,
-    language character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: tours_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tours_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tours_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tours_id_seq OWNED BY tours.id;
-
-
---
 -- Name: trackings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -6890,7 +6919,8 @@ CREATE TABLE users (
     invitations_count integer DEFAULT 0,
     signup_at timestamp without time zone,
     provider character varying,
-    uid character varying
+    uid character varying,
+    digital_signature text
 );
 
 
@@ -7881,6 +7911,20 @@ ALTER TABLE ONLY sequences ALTER COLUMN id SET DEFAULT nextval('sequences_id_seq
 
 
 --
+-- Name: share_contacts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY share_contacts ALTER COLUMN id SET DEFAULT nextval('share_contacts_id_seq'::regclass);
+
+
+--
+-- Name: shares id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY shares ALTER COLUMN id SET DEFAULT nextval('shares_id_seq'::regclass);
+
+
+--
 -- Name: subscription_natures id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -7969,13 +8013,6 @@ ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regcl
 --
 
 ALTER TABLE ONLY tokens ALTER COLUMN id SET DEFAULT nextval('tokens_id_seq'::regclass);
-
-
---
--- Name: tours id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tours ALTER COLUMN id SET DEFAULT nextval('tours_id_seq'::regclass);
 
 
 --
@@ -9064,6 +9101,22 @@ ALTER TABLE ONLY sequences
 
 
 --
+-- Name: share_contacts share_contacts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY share_contacts
+    ADD CONSTRAINT share_contacts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: shares shares_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY shares
+    ADD CONSTRAINT shares_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: subscription_natures subscription_natures_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9165,14 +9218,6 @@ ALTER TABLE ONLY teams
 
 ALTER TABLE ONLY tokens
     ADD CONSTRAINT tokens_pkey PRIMARY KEY (id);
-
-
---
--- Name: tours tours_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tours
-    ADD CONSTRAINT tours_pkey PRIMARY KEY (id);
 
 
 --
@@ -17939,6 +17984,11 @@ INSERT INTO schema_migrations (version) VALUES ('20170831071726');
 
 INSERT INTO schema_migrations (version) VALUES ('20170831180835');
 
-INSERT INTO schema_migrations (version) VALUES ('20170918093638');
+INSERT INTO schema_migrations (version) VALUES ('20171010075206');
 
+INSERT INTO schema_migrations (version) VALUES ('20171103201542');
+
+INSERT INTO schema_migrations (version) VALUES ('20171103201723');
+
+INSERT INTO schema_migrations (version) VALUES ('20171109064011');
 
