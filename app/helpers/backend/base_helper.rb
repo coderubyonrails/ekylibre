@@ -120,25 +120,28 @@ module Backend
 
       main_name = args[0].to_s.to_sym
       main_options[:icon] ||= main_name.to_s.parameterize.tr('_', '-')
-
+      main_options[:url] = (!args[1].nil?) ? args[1] : "#"
       html = ''.html_safe
       for name, url, options in menu.items
-        li_options = {}
-        li_options[:class] = 'active' if options.delete(:active)
+        if !options.nil?
+          li_options = {}
+          li_options[:class] = 'active' if options.delete(:active)
 
-        kontroller = (url.is_a?(Hash) ? url[:controller] : nil) || controller_name
-        options[:title] ||= ::I18n.t("actions.#{kontroller}.#{name}".to_sym, { default: ["labels.#{name}".to_sym] }.merge(options.delete(:i18n) || {}))
-        if icon = options.delete(:icon)
-          item[:title] = content_tag(:i, '', class: 'icon-' + icon.to_s) + ' '.html_safe + h(item[:title])
+          kontroller = (url.is_a?(Hash) ? url[:controller] : nil) || controller_name
+          options[:title] ||= ::I18n.t("actions.#{kontroller}.#{name}".to_sym, { default: ["labels.#{name}".to_sym] }.merge(options.delete(:i18n) || {}))
+          if icon = options.delete(:icon)
+            item[:title] = content_tag(:i, '', class: 'icon-' + icon.to_s) + ' '.html_safe + h(item[:title])
+          end
+          url[:action] ||= name if name != :back && url.is_a?(Hash)
+          html << content_tag(:li, link_to(options[:title], url, options), li_options) if authorized?(url)
         end
-        url[:action] ||= name if name != :back && url.is_a?(Hash)
-        html << content_tag(:li, link_to(options[:title], url, options), li_options) if authorized?(url)
       end
 
       if html.present?
         html = content_tag(:ul, html)
-        snippet(main_name, main_options) { html }
       end
+
+      snippet(main_name, main_options) { html }
 
       nil
     end
@@ -163,20 +166,26 @@ module Backend
       options[:icon] ||= name
       options[:class] << " snippet-#{options[:icon]}"
       options[:class] << ' active' if options[:active]
-
+      child_block = capture(&block)
       html = ''
       html << "<div id='#{name}' class='snippet#{' ' + options[:class].to_s if options[:class]}#{' collapsed' if collapsed}'>"
-
       unless options[:title].is_a?(FalseClass)
-        html << "<a href='#{url_for(controller: '/backend/snippets', action: :toggle, id: name)}' class='snippet-title' data-toggle-snippet='true'>"
-        html << "<i class='collapser'></i>"
-        html << '<h3><i></i>' + (options[:title] || "snippets.#{name}".t(default: ["labels.#{name}".to_sym])) + '</h3>'
-        html << '</a>'
+        if child_block.present?
+          html << "<a href='#{url_for(controller: '/backend/snippets', action: :toggle, id: name)}' class='snippet-title' data-toggle-snippet='true'>"
+          html << "<i class='collapser'></i>"
+          html << '<h3><i></i>' + (options[:title] || "snippets.#{name}".t(default: ["labels.#{name}".to_sym])) + '</h3>'
+          html << '</a>'
+        else
+          url = url_for(options[:url])  
+          html << "<a href='" + url_for(options[:url])+ "' class='snippet-title'>"
+          html << '<h3><i></i>' + (options[:title] || "snippets.#{name}".t(default: ["labels.#{name}".to_sym])) + '</h3>'
+          html << '</a>'
+        end
       end
 
       html << "<div class='snippet-content'" + (collapsed ? ' style="display: none"' : '') + '>'
       begin
-        html << capture(&block)
+        html << child_block
       rescue Exception => e
         html << content_tag(:small, "#{e.class.name}: #{e.message}")
       end

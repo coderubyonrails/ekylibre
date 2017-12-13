@@ -1,12 +1,14 @@
 - if part = Ekylibre::Navigation.part_of(controller.controller_path, action_name)
   - current = Ekylibre::Navigation.reverse(controller.controller_path, action_name) || {}
   - part.children.each do |group|
-    - side_menu(group.name, title: group.human_name, icon: group.icon, active: !!(current[:group] == group)) do |m|
-      - group.children.each do |item|
-        - if current_user and current_user.can_access?(item.default_page.to_hash)
-          - attrs = {title: item.human_name}
-          - attrs[:active] = true if item == current[:item]
-          - m.link(item, item.default_page.to_hash, attrs)
+    - side_menu(group.name,((!group.default_page.nil?) ? group.default_page.to_hash : nil), title: group.human_name, icon: group.icon, active: !!(current[:group] == group)) do |m|
+      - if group.children.present?
+        - group.children.each do |item|
+          - if current_user and current_user.can_access?(item.default_page.to_hash)
+            - attrs = {title: item.human_name}
+            - attrs[:active] = true if item == current[:item]
+            - m.link(item, item.default_page.to_hash, attrs)
+     
 
 - snippet :user, title: Entity.of_company.full_name do
   %ul

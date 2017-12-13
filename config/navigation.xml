@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <navigation>
   <part name="relationship" icon="people">
-    <page to="backend/dashboards#relationship"/>
+    <group name="relationship" icon="people">
+      <page to="backend/dashboards#relationship"/>
+    </group>
     <group name="entities" icon="group">
       <item name="entities">
         <page to="backend/entities#index"/>
@@ -93,7 +95,9 @@
     </group>
   </part>
   <part name="accountancy" icon="money">
-    <page to="backend/dashboards#accountancy"/>
+    <group name="accountancy" icon="money">
+      <page to="backend/dashboards#accountancy"/>
+    </group>
     <group name="journals" icon="book">
       <item name="journals">
         <page to="backend/journals#index"/>
@@ -263,7 +267,9 @@
     </group>
   </part>
   <part name="trade" icon="bar-chart">
-    <page to="backend/dashboards#trade"/>
+    <group name="trade" icon="bar-chart">
+      <page to="backend/dashboards#trade"/>
+    </group>
     <group name="sales" icon="bar-chart">
       <item name="sales">
         <page to="backend/sales#index"/>
@@ -475,7 +481,9 @@
     </group>
   </part>
   <part name="stocks" icon="truck">
-    <page to="backend/dashboards#stocks"/>
+    <group name="stocks" icon="matter">
+      <page to="backend/dashboards#stocks"/>
+    </group>
     <group name="stocks" icon="matter">
       <item name="stocks">
         <page to="backend/matters#index"/>
@@ -625,7 +633,9 @@
     </group>
   </part>
   <part name="production" icon="cogs">
-    <page to="backend/dashboards#production"/>
+    <group name="production" icon="cogs">
+      <page to="backend/dashboards#production"/>
+    </group>
     <group name="production" icon="cogs">
       <item name="activities">
         <page to="backend/activities#index"/>
@@ -996,7 +1006,9 @@
     </group>
   </part>
   <part name="humans">
-    <page to="backend/dashboards#humans"/>
+    <group name="humans" icon="humans">
+      <page to="backend/dashboards#humans"/>
+    </group>
     <group name="payslips" icon="archive">
       <item name="payslips">
         <page to="backend/payslips#index"/>
@@ -1034,7 +1046,9 @@
     </group>
   </part>
   <part name="tools" icon="magic">
-    <page to="backend/dashboards#tools"/>
+    <group name="tools" icon="magic">
+      <page to="backend/dashboards#tools"/>
+    </group>
     <group name="archives" icon="archive">
       <item name="documents">
         <page to="backend/documents#index"/>
@@ -1149,7 +1163,9 @@
 	-->
   </part>
   <part name="settings" icon="wrench">
-    <page to="backend/dashboards#settings"/>
+    <group name="settings" icon="user">
+      <page to="backend/dashboards#settings"/>
+    </group>
     <group name="preferences" icon="user">
       <item name="myselves">
         <page to="backend/myselves#show"/>
